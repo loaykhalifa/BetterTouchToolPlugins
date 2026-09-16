@@ -1,126 +1,143 @@
 # Media Downloader — BetterTouchTool Launcher Plugin
 
-A minimal **Media Downloader** plugin for **BetterTouchTool Launcher**. It uses **yt-dlp** and FFmpeg to download video or audio from YouTube, Facebook, Instagram, TikTok and many other yt-dlp supported sites.
+![Media Downloader screenshot](https://raw.githubusercontent.com/loaykhalifa/BetterTouchToolPlugins/master/plugins/community/launcher-media-downloader/thumbnail.jpg)
+
+A native Swift **BetterTouchTool Launcher** plugin for downloading video or extracting audio with [yt-dlp](https://github.com/yt-dlp/yt-dlp) and FFmpeg.
 
 ## Features
 
-- One-page BetterTouchTool Launcher interface
-- Video / Audio mode switch
-- Format dropdown
-- Thumbnail preview
-- Live horizontal progress bar with speed and ETA
-- Playlist URLs save into a playlist-named folder
-- Downloaded filenames use `Title - Channel Name.ext`
-- Choose destination folder
-- Update yt-dlp / FFmpeg from inside the plugin
-- Copy last log for troubleshooting
-- Keyboard hints:
-  - `Enter` starts download
-  - `Tab` changes format
-  - `Command` switches Video / Audio mode
+- Native one-page interface inside BTT Launcher
+- Video and Audio modes with video presets, custom yt-dlp selectors, and MP3/M4A/WAV/Opus/FLAC output
+- Thumbnail, title, channel/uploader, duration, and estimated-size preview
+- Live progress, transferred size, speed, ETA, playlist count, and queue count
+- Direct URLs, plain-text YouTube searches, multi-URL queues, and multi-line search lists
+- Playlist folders and timestamped folders for text-list queues
+- Individual Spotify track links resolved to a YouTube audio search
+- Configurable destination, browser cookies, tool checks, updates, and logs
+- Background downloads when the Launcher panel closes
+- Open or reveal completed files
 
 ## Screenshot
 
 ![Screenshot](https://raw.githubusercontent.com/loaykhalifa/BetterTouchToolPlugins/master/plugins/community/launcher-media-downloader/thumbnail.jpg)
 
-Screenshot file in this repository:
-
-`thumbnail.jpg`
-
-GitHub URL:
-
-https://github.com/loaykhalifa/BetterTouchToolPlugins/blob/master/plugins/community/launcher-media-downloader/thumbnail.jpg
+The repository screenshot is `thumbnail.jpg`.
 
 ## Requirements
 
+- macOS 12 or later
 - BetterTouchTool with Swift plugin support
-- Apple Command Line Tools if BTT asks to compile Swift plugins
-- Homebrew at:
+- Apple Command Line Tools if BetterTouchTool requests them for Swift compilation
+- Apple Silicon Homebrew tools at:
+  - `/opt/homebrew/bin/brew`
+  - `/opt/homebrew/bin/yt-dlp`
+  - `/opt/homebrew/bin/ffmpeg`
+  - `/opt/homebrew/bin/ffprobe`
 
-  `/opt/homebrew/bin/brew`
+Install dependencies with:
 
-- yt-dlp at:
+```bash
+brew install yt-dlp ffmpeg
+```
 
-  `/opt/homebrew/bin/yt-dlp`
-
-- FFmpeg and ffprobe at:
-
-  `/opt/homebrew/bin/ffmpeg`  
-  `/opt/homebrew/bin/ffprobe`
-
-The plugin includes an **Update** button that can install or update yt-dlp and FFmpeg using Homebrew.
+> This release targets Apple Silicon Macs. The health checker can detect `/usr/local`, but downloading and preview currently use `/opt/homebrew` paths.
 
 ## Installation
 
-1. Download or clone this folder.
-2. Copy this file:
+1. Download or clone this plugin folder.
+2. Copy `BTTMediaDownloader.swift` to:
 
-   `BTTMediaDownloader.swift`
+   ```text
+   ~/Library/Application Support/BetterTouchTool/Plugins/
+   ```
 
-   to:
+3. Restart BetterTouchTool or wait for its Swift plugin watcher to reload the file.
+4. Open **BTT Launcher**, search for **Media Downloader**, and open the result.
+5. Enter a supported URL or search, select the output options, and choose **Download**.
 
-   `~/Library/Application Support/BetterTouchTool/Plugins/`
+## Usage
 
-3. Restart BetterTouchTool, or wait until BTT reloads Swift plugins.
-4. Open **BTT Launcher**.
-5. Search for:
+The Source field accepts a single HTTP(S) URL, plain search text, multiple URLs, multiple search lines, or an individual Spotify track link.
 
-   `Media Downloader`
+| Key | Action |
+|---|---|
+| Return / Enter | Start download |
+| Tab | Switch Video / Audio mode |
+| Control | Cycle format |
+| Shift-Control | Cycle format backward |
+| Option | Cycle quality |
+| Shift-Option | Cycle quality backward |
 
-6. Paste a supported media URL, choose Video or Audio, choose a format and press **Download**.
-
-## How it works
-
-The plugin validates that the entered URL is an HTTP(S) URL with a non-empty host, then passes it to yt-dlp using an end-of-options marker (`--`) to avoid option injection.
-
-For downloads, it uses yt-dlp with FFmpeg for merging or audio extraction. For previews, it asks yt-dlp for the first thumbnail and displays it inside the BTT Launcher UI.
+Choose browser cookies from **Settings** when a site requires authentication. Cookie access may trigger macOS or browser permission prompts.
 
 ## Output
 
-Default downloads folder:
+Default folder:
 
-`~/Downloads/BTT Media Downloads`
+```text
+~/Downloads/BTT Media Downloads
+```
 
-Single items are named like:
+Single items use `Video Title - Channel Name.ext`. Playlists use `Playlist Name/Video Title - Channel Name.ext`. Multi-line text queues use a timestamped `Media Playlist …` folder.
 
-`Video Title - Channel Name.ext`
+Last log:
 
-Playlist URLs are saved into a playlist-named subfolder:
+```text
+~/Library/Logs/BTTMediaDownloader.log
+```
 
-`Playlist Name/Video Title - Channel Name.ext`
+## Tool management
 
-Last log file:
+- **Check Tools** checks Homebrew, yt-dlp, FFmpeg, ffprobe, internet access, destination writability, and disk space.
+- **Update Tools** uses an existing Homebrew installation to install or update yt-dlp and FFmpeg.
+- **Copy Log** copies the latest troubleshooting log.
 
-`~/Library/Logs/BTTMediaDownloader.log`
+The updater does not install Homebrew itself.
 
-## Security and permissions
+## Security and privacy
 
-This plugin:
+The plugin:
 
-- Runs `/opt/homebrew/bin/yt-dlp` for metadata, thumbnails and downloads
-- Uses FFmpeg / ffprobe through yt-dlp for processing
-- Runs Homebrew only when the **Update** button is pressed
-- Reads the clipboard only to prefill a possible URL when opening the plugin
-- Writes downloads to the selected folder
-- Writes troubleshooting logs to `~/Library/Logs/BTTMediaDownloader.log`
+- Validates HTTP(S) targets and passes them to yt-dlp after an end-of-options marker
+- Converts plain text to a `ytsearch1:` target instead of executing it as shell input
+- Launches yt-dlp with structured `Process` arguments
+- Reads the clipboard when the surface opens and when Paste is selected
+- Downloads remote thumbnail images for preview
+- Contacts Spotify's oEmbed endpoint for Spotify-track resolution
+- Reads browser cookies only when a browser is selected
+- Writes downloads to the selected folder and logs to `~/Library/Logs/BTTMediaDownloader.log`
+- Runs Homebrew only when **Update Tools** is selected
+- Uses a short shell command to terminate the active process tree when Cancel is selected
 
-## Notes
+Review the Swift source before installation. Swift plugins run with BetterTouchTool's permissions.
 
-- Supported sites depend on yt-dlp.
-- Some sites may require cookies or additional yt-dlp configuration; this plugin intentionally keeps the UI minimal.
-- The current package documents the Apple Silicon Homebrew path (`/opt/homebrew`).
+## Limitations
 
-## Disclaimer
+- Supported services and formats depend on yt-dlp and the source website.
+- DRM-protected media is not supported.
+- Spotify support is limited to individual tracks and searches YouTube for a likely match.
+- Estimated sizes may be unavailable or differ from final merged or converted output.
+- Closing BTT Launcher does not cancel an active download.
+- This release targets Apple Silicon Homebrew paths.
 
-Only download media you own, created, or have permission to download. Respect copyright laws and each platform's terms of service.
+## Troubleshooting
+
+1. Open **Settings → Check Tools**.
+2. Install missing dependencies with `brew install yt-dlp ffmpeg`, or use **Update Tools** if Homebrew is already installed.
+3. Select browser cookies for authenticated sources.
+4. Use **Copy Log** and inspect `~/Library/Logs/BTTMediaDownloader.log`.
 
 ## Files
 
-- `BTTMediaDownloader.swift` — the BetterTouchTool Swift Launcher plugin
-- `plugin.json` — metadata for community/gallery publishing
-- `README.md` — this documentation
-- `thumbnail.jpg` — screenshot used by the README and plugin metadata
+- `BTTMediaDownloader.swift` — BetterTouchTool Swift Launcher plugin
+- `plugin.json` — community/gallery metadata
+- `README.md` — documentation
+- `thumbnail.jpg` — screenshot
+
+## Disclaimer
+
+Only download media you own, created, or have permission to download. Respect copyright law and each platform's terms of service.
 
 ## License
 
-MIT — feel free to modify and share.
+MIT

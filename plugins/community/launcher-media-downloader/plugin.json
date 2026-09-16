@@ -4,8 +4,8 @@
   "type": "Launcher",
   "version": "1.0.0",
   "icon": "arrow.down.circle.fill",
-  "shortDescription": "A minimal media downloader for BetterTouchTool Launcher powered by yt-dlp.",
-  "description": "Download video or audio from YouTube, Facebook, Instagram, TikTok and many other yt-dlp supported sites directly inside BTT Launcher with format selection, thumbnail preview, live progress, speed, ETA, playlist folders and log support.",
+  "shortDescription": "Download video or extract audio with yt-dlp inside BTT Launcher.",
+  "description": "A native BetterTouchTool Launcher plugin with video and audio presets, metadata and thumbnail previews, progress reporting, playlists, multi-item queues, text search, Spotify track resolution, browser cookies, destination selection, dependency checks, updates, and logs.",
   "author": "loaykhalifa",
   "license": "MIT",
   "minMacOSVersion": "12.0",
@@ -13,25 +13,31 @@
   "repository": "https://github.com/loaykhalifa/BetterTouchToolPlugins",
   "homepage": "https://github.com/loaykhalifa/BetterTouchToolPlugins/tree/master/plugins/community/launcher-media-downloader",
   "entry": "BTTMediaDownloader.swift",
-  "screenshot": "https://github.com/loaykhalifa/BetterTouchToolPlugins/blob/master/plugins/community/launcher-media-downloader/thumbnail.jpg",
+  "screenshot": "https://raw.githubusercontent.com/loaykhalifa/BetterTouchToolPlugins/master/plugins/community/launcher-media-downloader/thumbnail.jpg",
   "screenshots": [
-    "https://github.com/loaykhalifa/BetterTouchToolPlugins/blob/master/plugins/community/launcher-media-downloader/thumbnail.jpg"
+    "https://raw.githubusercontent.com/loaykhalifa/BetterTouchToolPlugins/master/plugins/community/launcher-media-downloader/thumbnail.jpg"
   ],
   "requirements": [
+    "macOS 12 or later",
     "BetterTouchTool with Swift plugin support",
-    "Homebrew installed at /opt/homebrew/bin/brew",
+    "Apple Command Line Tools if BetterTouchTool requests them for Swift compilation",
+    "Apple Silicon Homebrew at /opt/homebrew/bin/brew",
     "yt-dlp at /opt/homebrew/bin/yt-dlp",
-    "ffmpeg and ffprobe at /opt/homebrew/bin/",
-    "Apple Command Line Tools if BTT asks to compile Swift plugins"
+    "ffmpeg and ffprobe under /opt/homebrew/bin"
   ],
   "permissions": [
-    "Runs /opt/homebrew/bin/yt-dlp to fetch media metadata, thumbnails and downloads",
-    "Runs /opt/homebrew/bin/ffmpeg and /opt/homebrew/bin/ffprobe through yt-dlp for media processing",
-    "Runs /opt/homebrew/bin/brew when the Update button is used to install or update yt-dlp and FFmpeg",
-    "Reads the clipboard only to prefill a URL when opening the plugin",
+    "Runs yt-dlp to fetch metadata, thumbnails, estimates, and media",
+    "Uses ffmpeg and ffprobe through yt-dlp for merging, conversion, and extraction",
+    "Runs Homebrew update, install, and upgrade commands only when Update Tools is selected",
+    "Reads the clipboard when the plugin surface opens and when Paste is selected",
+    "Downloads remote thumbnail images for preview",
+    "Contacts Spotify's oEmbed endpoint when resolving an individual Spotify track",
+    "Can read selected browser cookies through yt-dlp",
     "Writes downloads to the selected folder, defaulting to ~/Downloads/BTT Media Downloads",
-    "Writes troubleshooting output to ~/Library/Logs/BTTMediaDownloader.log"
+    "Writes the latest troubleshooting output to ~/Library/Logs/BTTMediaDownloader.log",
+    "Runs a shell command to terminate the active process tree when Cancel is selected"
   ],
+  "reviewStatus": "community",
   "keywords": [
     "launcher",
     "media",
@@ -41,11 +47,14 @@
     "facebook",
     "instagram",
     "tiktok",
+    "spotify",
     "video",
     "audio",
     "mp3",
     "mp4",
-    "playlist"
+    "playlist",
+    "queue",
+    "ffmpeg"
   ],
   "files": [
     {
@@ -53,14 +62,23 @@
       "type": "swift-source-plugin"
     },
     {
+      "path": "README.md",
+      "type": "documentation"
+    },
+    {
       "path": "thumbnail.jpg",
       "type": "screenshot"
     }
   ],
   "installation": [
-    "Copy BTTMediaDownloader.swift to ~/Library/Application Support/BetterTouchTool/Plugins/",
-    "Restart BetterTouchTool or wait for plugin reload.",
-    "Open BTT Launcher and search for Media Downloader.",
-    "Paste a supported media URL, choose Video or Audio, choose a format and press Download."
+    "Install yt-dlp and ffmpeg with Apple Silicon Homebrew.",
+    "Copy BTTMediaDownloader.swift to ~/Library/Application Support/BetterTouchTool/Plugins/.",
+    "Restart BetterTouchTool or wait for its Swift plugin watcher to reload the file.",
+    "Open BTT Launcher, search for Media Downloader, and open the result."
+  ],
+  "limitations": [
+    "This release uses Apple Silicon Homebrew paths under /opt/homebrew.",
+    "Spotify support is limited to individual track links resolved to a YouTube search.",
+    "Supported sites and formats depend on yt-dlp."
   ]
 }
