@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "name": "Media Downloader",
+  "identifier": "com.loay.btt.media-downloader",
+  "type": "Launcher",
+  "entry": "BTTMediaDownloader.swift",
+  "author": {
+    "name": "loaykhalifa",
+    "url": "https://github.com/loaykhalifa"
+  },
+  "description": "Download video or extract audio with yt-dlp inside BetterTouchTool Launcher, with previews, format controls, queues, playlists, progress, cookies, and tool management.",
+  "minimumBetterTouchToolVersion": "5.0",
+  "permissions": [
+    "clipboard-read",
+    "file-read",
+    "file-write",
+    "network",
+    "open-url",
+    "shell",
+    "user-defaults",
+    "process-control"
+  ],
+  "screenshots": [
+    "screenshots/main.jpg"
+  ],
+  "reviewStatus": "submitted",
+  "origin": {
+    "repository": "https://github.com/loaykhalifa/BetterTouchToolPlugins",
+    "source": "https://github.com/loaykhalifa/BetterTouchToolPlugins/blob/master/plugins/community/launcher-media-downloader/BTTMediaDownloader.swift"
+  },
+  "copyright": "Copyright (c) 2026 loaykhalifa.",
+  "license": "MIT"
+}
